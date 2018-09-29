@@ -2,7 +2,6 @@ package Objetos;
 
 public class Perro {
 
-    int ID;
     String email;
     String genero;
     String nombre;
@@ -13,20 +12,11 @@ public class Perro {
     }
 
     public Perro(int ID, String email, String genero, String nombre, String raza) {
-        this.ID = ID;
+
         this.email = email;
         this.genero = genero;
         this.nombre = nombre;
         this.raza = raza;
-    }
-
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
     public String getEmail() {

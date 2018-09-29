@@ -20,15 +20,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-//        mDatabase = FirebaseDatabase.getInstance().getReference("dogdate");
-//
-//        Perro churrete = new Perro(3,"churrete@gmail.com","macho","churrete", "chucho");
-//
-//
-//        mDatabase.child("usuarios").child("3").setValue(churrete);
-//
-//
-//        Log.i("INFORMACION","Se ha hecho un add a la base de datos");
+
+        //COMO ESCRIBIR EN FIREBASE BBDD
+        mDatabase = FirebaseDatabase.getInstance().getReference("usuarios");
+
+        Perro churrete = new Perro(3,"churrete@gmail.com","macho","churrete", "chucho");
+
+
+        mDatabase.child("46").setValue(churrete);
+
+
+        Log.i("INFORMACION","Se ha hecho un add a la base de datos");
 
 
     }
