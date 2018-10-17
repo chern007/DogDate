@@ -81,5 +81,5 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="281dp"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
+        app:srcCompat="@drawable/dogdatelogo" />
 </LinearLayout>
