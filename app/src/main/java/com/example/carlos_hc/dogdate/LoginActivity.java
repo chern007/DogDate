@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class LoginActivity extends AppCompatActivity {
 
-
     // UI references.
     private AutoCompleteTextView txtEmail;
     Button btnSigIn;
@@ -41,13 +40,15 @@ public class LoginActivity extends AppCompatActivity {
         txtEmail = (AutoCompleteTextView) findViewById(R.id.email);
         txtPassword = (EditText) findViewById(R.id.password);
 
+        txtEmail.setText("ringo@gmail.com");//para probar
+        txtPassword.setText("261187");//para probar
 
         btnSigIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //sacamos el usuario y la pass de la actividad
-                String user = txtEmail.getText().toString().trim();
+                final String user = txtEmail.getText().toString().trim();
                 String pass = txtPassword.getText().toString().trim();
 
 
@@ -58,15 +59,17 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
 
-                                    Toast.makeText(LoginActivity.this,"OK",Toast.LENGTH_LONG).show();
-
-                                    //startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                    Toast.makeText(LoginActivity.this,"Login correcto",Toast.LENGTH_LONG).show();
+                                    //iniciamos la actividad principal de la aplicacion
+                                    Intent actividadPrincipal = new Intent(getApplicationContext(),MainActivity.class);
+                                    actividadPrincipal.putExtra("email", user);
+                                    startActivity(actividadPrincipal);
                                 }
 
                                 // [START_EXCLUDE]
                                 if (!task.isSuccessful()) {
 
-                                    Toast.makeText(LoginActivity.this,"NOOOO",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this,"Login erroneo",Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -81,9 +84,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void sacaMensaje(){
-        Toast.makeText(this,"NOOOO",Toast.LENGTH_LONG).show();
-    }
 
 
 }
