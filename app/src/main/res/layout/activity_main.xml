@@ -22,18 +22,16 @@
         android:id="@+id/btMatch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/txtGenero"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/btDiscart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        app:layout_constraintStart_toEndOf="@+id/btMatch"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/btMatch"
         app:srcCompat="@android:drawable/ic_delete" />
 
@@ -45,7 +43,8 @@
         android:layout_marginTop="12dp"
         android:text="Nombre:"
         app:layout_constraintStart_toStartOf="@+id/imgPerro"
-        app:layout_constraintTop_toBottomOf="@+id/imgPerro" />
+        app:layout_constraintTop_toBottomOf="@+id/imgPerro"
+        tools:fontFamily="@font/trade_winds" />
 
     <TextView
         android:id="@+id/txtGenero"
@@ -54,7 +53,8 @@
         android:layout_marginTop="16dp"
         android:text="Género: "
         app:layout_constraintStart_toStartOf="@+id/txtNombre"
-        app:layout_constraintTop_toBottomOf="@+id/txtNombre" />
+        app:layout_constraintTop_toBottomOf="@+id/txtNombre"
+        tools:fontFamily="@font/trade_winds" />
 
     <TextView
         android:id="@+id/txtRaza"
@@ -63,7 +63,8 @@
         android:layout_marginStart="136dp"
         android:text="Raza:"
         app:layout_constraintStart_toEndOf="@+id/txtNombre"
-        app:layout_constraintTop_toTopOf="@+id/txtNombre" />
+        app:layout_constraintTop_toTopOf="@+id/txtNombre"
+        tools:fontFamily="@font/trade_winds" />
 
     <TextView
         android:id="@+id/txtEmail"
@@ -72,5 +73,29 @@
         android:layout_marginStart="136dp"
         android:text="Email:"
         app:layout_constraintStart_toEndOf="@+id/txtGenero"
-        app:layout_constraintTop_toTopOf="@+id/txtGenero" />
+        app:layout_constraintTop_toTopOf="@+id/txtGenero"
+        tools:fontFamily="@font/trade_winds" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <ImageButton
+        android:id="@+id/btSiguiente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/btMatch"
+        app:srcCompat="@android:drawable/ic_media_play" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
 </android.support.constraint.ConstraintLayout>

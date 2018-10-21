@@ -7,17 +7,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,17 +34,23 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     //creamos una lista de perros donde guardaremos los resultados de las queries
-    List<Perro> perros = new ArrayList<>();
+    List<Perro> misPerros;;
     String emailLogin;
     Perro miPerro;
     String miPerroKey;
+    Map<String, Object> matches;
+    Map<String, Object> discarts;
 
     Context miCOntexto;
+    ImageView imagenPerro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //conectamos con la imagen
+        imagenPerro = findViewById(R.id.imgPerro);
 
         //obtenemos el email del logueo
         emailLogin = getIntent().getStringExtra("email");
@@ -57,17 +68,97 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //nos devuelve ina coleccion de resulatados
+                //nos devuelve una coleccion de resulatados
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         miPerro = snapshot.getValue(Perro.class);
                         miPerroKey = snapshot.getKey();
                     }
+
+                    //sacamos los matches del usuario
+
+                    FirebaseDatabase.getInstance().getReference("matches").child(miPerroKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.exists()) {
+
+                                matches = new LinkedHashMap<>();
+
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    matches.put(snapshot.getKey(), snapshot.getValue());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //sacamos los discarts del usuario
+                    FirebaseDatabase.getInstance().getReference("discarts").child(miPerroKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.exists()) {
+                                discarts = new LinkedHashMap<>();
+
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    discarts.put(snapshot.getKey(), snapshot.getValue());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+                    //sacamos los usuarios - los match y los discarts (son los que se presentaran en las cartas de presentación)
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                            if (dataSnapshot.exists()) {
+
+                                misPerros = new ArrayList<Perro>();
+
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                                    String key = snapshot.getKey();
+
+                                    if (!matches.containsKey(key) && !discarts.containsKey(key) && !key.equals(miPerroKey)) {
+
+                                        misPerros.add(snapshot.getValue(Perro.class));
+                                    }
+                                }
+
+                                //seguir por aqui
+                                Log.i("TUSA", String.valueOf(misPerros.size()));
+
+
+                                cargarFotoPorEmail(emailLogin);
+
+
+
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
-
-
-                Log.i("TUSA", String.valueOf(perros.size()));
-
 
             }
 
@@ -132,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
 //        };
 //
 //        mDatabase.addValueEventListener(valueEventListener);
+
     }
 
 
@@ -158,6 +250,25 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void cargarFotoPorEmail(String email){
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+
+        // Create a reference with an initial file path and name
+        StorageReference pathReference = storageRef.child("dogDate/" + email +".jpg");
+
+        // Load the image using Glide
+        Glide.with(this /* context */)
+                .using(new FirebaseImageLoader())
+                .load(pathReference)
+                .into(imagenPerro);
+
+
     }
 
 
