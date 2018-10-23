@@ -6,6 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+    <TextView
+        android:id="@+id/txtNombre"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/trade_winds"
+        android:text="Nombre:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgPerro"
+        tools:fontFamily="@font/trade_winds" />
+
+    <TextView
+        android:id="@+id/txtRaza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/trade_winds"
+        android:text="Raza:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.441"
+        app:layout_constraintStart_toEndOf="@+id/txtNombre"
+        app:layout_constraintTop_toTopOf="@+id/txtNombre"
+        tools:fontFamily="@font/trade_winds" />
+
     <ImageView
         android:id="@+id/imgPerro"
         android:layout_width="350dp"
@@ -24,57 +50,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/txtGenero"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
     <ImageButton
         android:id="@+id/btDiscart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/btMatch"
         app:srcCompat="@android:drawable/ic_delete" />
-
-    <TextView
-        android:id="@+id/txtNombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="12dp"
-        android:text="Nombre:"
-        app:layout_constraintStart_toStartOf="@+id/imgPerro"
-        app:layout_constraintTop_toBottomOf="@+id/imgPerro"
-        tools:fontFamily="@font/trade_winds" />
-
-    <TextView
-        android:id="@+id/txtGenero"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Género: "
-        app:layout_constraintStart_toStartOf="@+id/txtNombre"
-        app:layout_constraintTop_toBottomOf="@+id/txtNombre"
-        tools:fontFamily="@font/trade_winds" />
-
-    <TextView
-        android:id="@+id/txtRaza"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="136dp"
-        android:text="Raza:"
-        app:layout_constraintStart_toEndOf="@+id/txtNombre"
-        app:layout_constraintTop_toTopOf="@+id/txtNombre"
-        tools:fontFamily="@font/trade_winds" />
-
-    <TextView
-        android:id="@+id/txtEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="136dp"
-        android:text="Email:"
-        app:layout_constraintStart_toEndOf="@+id/txtGenero"
-        app:layout_constraintTop_toTopOf="@+id/txtGenero"
-        tools:fontFamily="@font/trade_winds" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -87,7 +73,9 @@
         android:id="@+id/btSiguiente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/btMatch"
         app:srcCompat="@android:drawable/ic_media_play" />
@@ -97,5 +85,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintGuide_begin="103dp" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtRaza">
+
+        <TextView
+            android:id="@+id/txtEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/trade_winds"
+            android:text="Email:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:fontFamily="@font/trade_winds" />
+
+        <TextView
+            android:id="@+id/txtGenero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/trade_winds"
+            android:text="Género: "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txtEmail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:fontFamily="@font/trade_winds" />
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

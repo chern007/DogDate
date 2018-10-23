@@ -2,12 +2,14 @@ package com.example.carlos_hc.dogdate;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     //creamos una lista de perros donde guardaremos los resultados de las queries
-    List<Perro> misPerros;;
+    List<Perro> misPerros;//lista de perros para ver
+    List<Perro> misPerrosVistos;//lista de perros que hemos visto
     String emailLogin;
     Perro miPerro;
     String miPerroKey;
@@ -43,11 +46,25 @@ public class MainActivity extends AppCompatActivity {
 
     Context miCOntexto;
     ImageView imagenPerro;
+    TextView txtNombre;
+    TextView txtRaza;
+    TextView txtGenero;
+    TextView txtEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
+        getSupportActionBar().setTitle("  DogDate");
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        txtNombre = findViewById(R.id.txtNombre);
+        txtGenero = findViewById(R.id.txtGenero);
+        txtEmail = findViewById(R.id.txtEmail);
+        txtRaza = findViewById(R.id.txtRaza);
 
         //conectamos con la imagen
         imagenPerro = findViewById(R.id.imgPerro);
@@ -143,11 +160,17 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i("TUSA", String.valueOf(misPerros.size()));
 
 
-                                cargarFotoPorEmail(emailLogin);
+                                //cargamos la info del primer perro de los perros pendientes de catalogar
 
+                                Perro perroInicio = misPerros.get(0);
 
+                                //cargamos la foto del primer perro
+                                cargarFotoPorEmail(perroInicio.getEmail());
 
-
+                                txtEmail.setText("Email: " + perroInicio.getEmail());
+                                txtGenero.setText("Género: " + perroInicio.getGenero());
+                                txtNombre.setText("Nombre: " + perroInicio.getNombre());
+                                txtRaza.setText("Raza: " + perroInicio.getRaza());
 
                             }
                         }
