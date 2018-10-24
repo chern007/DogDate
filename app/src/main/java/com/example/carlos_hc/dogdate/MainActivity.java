@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -133,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-
 
 
                     //sacamos los usuarios - los match y los discarts (son los que se presentaran en las cartas de presentación)
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void cargarFotoPorEmail(String email){
+    private void cargarFotoPorEmail(String email) {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -283,13 +283,44 @@ public class MainActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         // Create a reference with an initial file path and name
-        StorageReference pathReference = storageRef.child("dogDate/" + email +".jpg");
+        StorageReference pathReference = storageRef.child("dogDate/" + email + ".jpg");
 
         // Load the image using Glide
         Glide.with(this /* context */)
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
                 .into(imagenPerro);
+
+
+    }
+
+    //metodo para controlar las acciones de los botones
+    public void clickBotones(View view) {
+
+        int idBoton = view.getId();
+
+
+        switch (idBoton) {
+
+            case R.id.btSiguiente:
+
+
+                break;
+
+
+            case R.id.btMatch:
+
+
+                break;
+
+
+            case R.id.btDiscart:
+
+
+                break;
+
+
+        }
 
 
     }
