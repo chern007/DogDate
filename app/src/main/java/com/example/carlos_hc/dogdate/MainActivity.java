@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     //creamos una lista de perros donde guardaremos los resultados de las queries
-    List<Perro> misPerros;//lista de perros para ver
-    List<Perro> misPerrosVistos;//lista de perros que hemos visto
+    Map<String, Object> misPerros;//lista de perros para ver
+    Map<String, Object> misPerrosVistos;//lista de perros que hemos visto
     String emailLogin;
     Perro miPerro;
     String miPerroKey;
@@ -61,6 +61,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
         getSupportActionBar().setTitle("  DogDate");
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+
+
+         //iniciamos la lista de perros
+        misPerros = new LinkedHashMap<>();
+        misPerrosVistos = new LinkedHashMap<>();
 
         txtNombre = findViewById(R.id.txtNombre);
         txtGenero = findViewById(R.id.txtGenero);
@@ -144,15 +150,13 @@ public class MainActivity extends AppCompatActivity {
 
                             if (dataSnapshot.exists()) {
 
-                                misPerros = new ArrayList<Perro>();
-
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                                     String key = snapshot.getKey();
 
                                     if (!matches.containsKey(key) && !discarts.containsKey(key) && !key.equals(miPerroKey)) {
 
-                                        misPerros.add(snapshot.getValue(Perro.class));
+                                        misPerros.put(snapshot.getKey(),snapshot.getValue(Perro.class));
                                     }
                                 }
 
@@ -160,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i("TUSA", String.valueOf(misPerros.size()));
 
 
-                                //cargamos la info del primer perro de los perros pendientes de catalogar
+                                //obtenemos la info del primer perro de los perros pendientes de catalogar
+                                Perro perroInicio = (Perro) misPerros.entrySet().iterator().next().getValue();
 
-                                Perro perroInicio = misPerros.get(0);
 
                                 //cargamos la foto del primer perro
                                 cargarFotoPorEmail(perroInicio.getEmail());
@@ -302,19 +306,65 @@ public class MainActivity extends AppCompatActivity {
 
         switch (idBoton) {
 
-            case R.id.btSiguiente:
+            case R.id.btSiguiente :
+
+
+                Map.Entry<String,Object> primerPerro = misPerros.entrySet().iterator().next();
+
+                    misPerrosVistos.put(primerPerro.getKey(),primerPerro.getValue());
+
+                    misPerros.remove(primerPerro.getKey());
+
+                    if (misPerros.size() > 0) {
+                        //cargamos la foto del primer perro
+                        primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
+                        cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
+                        txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
+                        txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
+                        txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
+                        txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+                    }else{
+                        //si no quedan perros volvemos a cargar la lista de perros con los perros vistos
+
+                        misPerros.putAll(misPerrosVistos);//pasamos todos los perros vistos a la lista de perros
+                        misPerrosVistos.clear();//limpiamos la lista de perros vistos
+
+                        //cargamos la foto del primer perro
+                        primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
+                        cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
+                        txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
+                        txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
+                        txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
+                        txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+                    }
+
+
 
 
                 break;
 
 
-            case R.id.btMatch:
+            case R.id.btMatch :
+
+            //creamos un match nuevo para el perro que estamos visualizando
+
+                if (misPerros.size()>0) {
+
+                    String keyDelPerroActual = misPerros.entrySet().iterator().next().getKey();
+
+                    FirebaseDatabase.getInstance().getReference("matches").child().child(miPerroKey).child("mensaje").setValue("Hola holita vecinitoooo");
+
+                    misPerros.remove(keyDelPerroActual);
+
+
+                    //seguir por aqui...
+                }
 
 
                 break;
 
 
-            case R.id.btDiscart:
+            case R.id.btDiscart :
 
 
                 break;
