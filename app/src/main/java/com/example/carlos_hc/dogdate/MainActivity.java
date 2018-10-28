@@ -1,14 +1,22 @@
 package com.example.carlos_hc.dogdate;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     Perro miPerro;
     String miPerroKey;
     Map<String, Object> matches;
-    Map<String, Object> discarts;
+    Map<String, Object> no_load;
 
     Context miCOntexto;
     ImageView imagenPerro;
@@ -51,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
     TextView txtRaza;
     TextView txtGenero;
     TextView txtEmail;
+
+
+    AlertDialog.Builder builder;
+    Map.Entry<String, Object> primerPerro;
+    String keyDelPerroActual;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
 
-
-         //iniciamos la lista de perros
+        //iniciamos la lista de perros
         misPerros = new LinkedHashMap<>();
         misPerrosVistos = new LinkedHashMap<>();
 
@@ -99,40 +112,22 @@ public class MainActivity extends AppCompatActivity {
                         miPerroKey = snapshot.getKey();
                     }
 
-                    //sacamos los matches del usuario
 
-                    FirebaseDatabase.getInstance().getReference("matches").child(miPerroKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            if (dataSnapshot.exists()) {
-
-                                matches = new LinkedHashMap<>();
-
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    matches.put(snapshot.getKey(), snapshot.getValue());
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
 
                     //sacamos los discarts del usuario
-                    FirebaseDatabase.getInstance().getReference("discarts").child(miPerroKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                    Query queryDiscarts = FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey);
+                    queryDiscarts.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot3) {
 
-                            if (dataSnapshot.exists()) {
-                                discarts = new LinkedHashMap<>();
+                            if (dataSnapshot3.exists()) {
+                                no_load = new LinkedHashMap<>();
 
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    discarts.put(snapshot.getKey(), snapshot.getValue());
+                                for (DataSnapshot snapshot3 : dataSnapshot3.getChildren()) {
+                                    no_load.put(snapshot3.getKey(), snapshot3.getValue());
                                 }
                             }
+
                         }
 
                         @Override
@@ -143,20 +138,20 @@ public class MainActivity extends AppCompatActivity {
 
 
                     //sacamos los usuarios - los match y los discarts (son los que se presentaran en las cartas de presentación)
-                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference("usuarios").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot4) {
 
 
-                            if (dataSnapshot.exists()) {
+                            if (dataSnapshot4.exists()) {
 
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                for (DataSnapshot snapshot4 : dataSnapshot4.getChildren()) {
 
-                                    String key = snapshot.getKey();
+                                    String key = snapshot4.getKey();
 
-                                    if (!matches.containsKey(key) && !discarts.containsKey(key) && !key.equals(miPerroKey)) {
+                                    if ((no_load == null || !no_load.containsKey(key)) && !key.equals(miPerroKey)) {
 
-                                        misPerros.put(snapshot.getKey(),snapshot.getValue(Perro.class));
+                                        misPerros.put(snapshot4.getKey(), snapshot4.getValue(Perro.class));
                                     }
                                 }
 
@@ -194,62 +189,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-//        //COMO CREAR UN NUEVO MIEMBRO EN LA BASE DE DATOS
-//        Perro churrete = new Perro(3,"churrete@gmail.com","macho","churrete", "chucho");
-//        mDatabase.child("47").setValue(churrete);
-
-//        //ACTUALIZAR UNA PROPIEDAD DE UN MIEMBRO
-//        mDatabase.child("46").child("genero").setValue("Macho");
-
-//        //nos saca los datos de un solo perro
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                miPerro = dataSnapshot.child("1").getValue(Perro.class);
-//
-//                Log.i("TUSA", miPerro.getNombre());
-//
-//                Toast.makeText(miCOntexto, miPerro.getNombre(), Toast.LENGTH_LONG);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
-
-
-        ///@@@@_QUERIES_@@@@
-        //Objeto que saca todos los hijos de la "BBDD" a la que apunta mDatabase
-//        ValueEventListener valueEventListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                perros.clear();
-//
-////                if (dataSnapshot.exists()) {
-////                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-////                        Perro tmp = snapshot.getValue(Perro.class);
-////                        perros.add(tmp);
-////                    }
-////                }
-//
-//                Log.i("TUSA", String.valueOf(perros.size()));
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//
-//        mDatabase.addValueEventListener(valueEventListener);
 
     }
 
@@ -306,14 +245,187 @@ public class MainActivity extends AppCompatActivity {
 
         switch (idBoton) {
 
-            case R.id.btSiguiente :
+            case R.id.btSiguiente:
 
 
-                Map.Entry<String,Object> primerPerro = misPerros.entrySet().iterator().next();
+                primerPerro = misPerros.entrySet().iterator().next();
 
-                    misPerrosVistos.put(primerPerro.getKey(),primerPerro.getValue());
+                misPerrosVistos.put(primerPerro.getKey(), primerPerro.getValue());
 
-                    misPerros.remove(primerPerro.getKey());
+                misPerros.remove(primerPerro.getKey());
+
+                if (misPerros.size() > 0) {
+                    //cargamos la foto del primer perro
+                    primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
+                    cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
+                    txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
+                    txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
+                    txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
+                    txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+                } else {
+                    //si no quedan perros volvemos a cargar la lista de perros con los perros vistos
+
+                    misPerros.putAll(misPerrosVistos);//pasamos todos los perros vistos a la lista de perros
+                    misPerrosVistos.clear();//limpiamos la lista de perros vistos
+
+                    //cargamos la foto del primer perro
+                    primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
+                    cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
+                    txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
+                    txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
+                    txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
+                    txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+                }
+
+
+                break;
+
+
+            case R.id.btMatch:
+
+                //creamos un match nuevo para el perro que estamos visualizando
+
+                misPerros.putAll(misPerrosVistos);//OJO! cargamos los perros vistos tmb
+
+
+                if (misPerros.size() > 0) {
+
+                    keyDelPerroActual = misPerros.entrySet().iterator().next().getKey();
+
+
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                    builder = new AlertDialog.Builder(MainActivity.this);
+                    // Get the layout inflater
+                    LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+
+                    // Inflate and set the layout for the dialog
+                    // Pass null as the parent view because its going in the dialog layout
+                    builder.setView(inflater.inflate(R.layout.dialog_mensaje, null))
+
+
+
+
+                            // Add action buttons
+                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+
+
+                                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue("hola");
+                                    FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey).child(keyDelPerroActual).setValue("match");
+
+                                    misPerros.remove(keyDelPerroActual);
+
+                                    if (misPerros.size() > 0) {
+                                        //cargamos la foto del primer perro
+                                        primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
+                                        cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
+                                        txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
+                                        txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
+                                        txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
+                                        txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+                                    } else {
+                                        //cargamos la foto del comodin ya que no hay perros para cargar
+                                        imagenPerro.setImageResource(R.drawable.comodindog);
+                                        cargarFotoPorEmail("");
+                                        txtEmail.setText("Email: ");
+                                        txtGenero.setText("Género: ");
+                                        txtNombre.setText("Nombre: ");
+                                        txtRaza.setText("Raza: ");
+                                    }
+
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            //builder.create();
+                            builder.show();
+
+
+
+
+
+
+
+
+
+
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue("hola");
+//                    FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey).child(keyDelPerroActual).setValue("match");
+//
+//                    misPerros.remove(keyDelPerroActual);
+//
+//                    if (misPerros.size() > 0) {
+//                        //cargamos la foto del primer perro
+//                        primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
+//                        cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
+//                        txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
+//                        txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
+//                        txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
+//                        txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+//                    } else {
+//                        //cargamos la foto del comodin ya que no hay perros para cargar
+//                        imagenPerro.setImageResource(R.drawable.comodindog);
+//                        cargarFotoPorEmail("");
+//                        txtEmail.setText("Email: ");
+//                        txtGenero.setText("Género: ");
+//                        txtNombre.setText("Nombre: ");
+//                        txtRaza.setText("Raza: ");
+//                    }
+
+                }
+
+
+                break;
+
+
+            case R.id.btDiscart:
+
+
+                //creamos un match nuevo para el perro que estamos visualizando
+
+                misPerros.putAll(misPerrosVistos);//OJO! cargamos los perros vistos tmb
+
+
+                if (misPerros.size() > 0) {
+
+                    String keyDelPerroActual = misPerros.entrySet().iterator().next().getKey();
+
+                    //FirebaseDatabase.getInstance().getReference("discarts").child(keyDelPerroActual).child(miPerroKey).setValue(miPerro.getEmail());
+                    FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey).child(keyDelPerroActual).setValue("discart");
+
+
+                    misPerros.remove(keyDelPerroActual);
 
                     if (misPerros.size() > 0) {
                         //cargamos la foto del primer perro
@@ -323,48 +435,17 @@ public class MainActivity extends AppCompatActivity {
                         txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
                         txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
                         txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
-                    }else{
-                        //si no quedan perros volvemos a cargar la lista de perros con los perros vistos
-
-                        misPerros.putAll(misPerrosVistos);//pasamos todos los perros vistos a la lista de perros
-                        misPerrosVistos.clear();//limpiamos la lista de perros vistos
-
-                        //cargamos la foto del primer perro
-                        primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
-                        cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
-                        txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
-                        txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
-                        txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
-                        txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
+                    } else {
+                        //cargamos la foto del comodin ya que no hay perros para cargar
+                        imagenPerro.setImageResource(R.drawable.comodindog);
+                        cargarFotoPorEmail("");
+                        txtEmail.setText("Email: ");
+                        txtGenero.setText("Género: ");
+                        txtNombre.setText("Nombre: ");
+                        txtRaza.setText("Raza: ");
                     }
 
-
-
-
-                break;
-
-
-            case R.id.btMatch :
-
-            //creamos un match nuevo para el perro que estamos visualizando
-
-                if (misPerros.size()>0) {
-
-                    String keyDelPerroActual = misPerros.entrySet().iterator().next().getKey();
-
-                    FirebaseDatabase.getInstance().getReference("matches").child().child(miPerroKey).child("mensaje").setValue("Hola holita vecinitoooo");
-
-                    misPerros.remove(keyDelPerroActual);
-
-
-                    //seguir por aqui...
                 }
-
-
-                break;
-
-
-            case R.id.btDiscart :
 
 
                 break;
@@ -376,4 +457,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+//        //METODO QUE SACA UN DIALOGO PARA MANDAR UN MENSAJE
+//        private static EditText text = null;
+//        private String resultado = "";
+//
+//        private String sacarDialogo() {
+//
+//            // inflamos el custom dialog
+//            final Dialog dialog = new Dialog(MainActivity.this);
+//            dialog.setContentView(R.layout.dialog_mensaje);
+//            dialog.setTitle("Mensaje");
+//
+//            // capturamos los objetos
+//            text = (EditText) dialog.findViewById(R.id.txtMatch);
+//
+//            //boton aceptar
+//            Button btnOK = (Button) dialog.findViewById(R.id.btnOK);
+//            // if button is clicked, close the custom dialog
+//            btnOK.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View v) {
+//                    resultado = text.getText().toString();
+//                }
+//            });
+//
+//            //boton cancelar
+//            Button btnCancel = (Button) dialog.findViewById(R.id.btnOK);
+//            // if button is clicked, close the custom dialog
+//            btnCancel.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View v) {
+//                    resultado = "";
+//                    dialog.cancel();
+//                }
+//            });
+//
+//            dialog.show();
+//
+//            return resultado;
+//        }
+
+
+
+
+
+
 }
+
+
+
