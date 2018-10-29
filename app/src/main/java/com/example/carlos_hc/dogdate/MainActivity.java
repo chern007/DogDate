@@ -1,12 +1,10 @@
 package com.example.carlos_hc.dogdate;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,9 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import Objetos.Perro;
@@ -111,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
                         miPerro = snapshot.getValue(Perro.class);
                         miPerroKey = snapshot.getKey();
                     }
-
 
 
                     //sacamos los discarts del usuario
@@ -209,6 +203,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.item2:
                 Toast.makeText(getApplicationContext(), "Item 2 Selected", Toast.LENGTH_LONG).show();
+
+                //iniciamos la actividad para ver mi perfil
+                Intent actividadMiPerfil = new Intent(getApplicationContext(),MiPerfil.class);
+                actividadMiPerfil.putExtra("miPerroKey", miPerroKey);
+                startActivity(actividadMiPerfil);
+
+                
                 return true;
             case R.id.item3:
                 Toast.makeText(getApplicationContext(), "Item 3 Selected", Toast.LENGTH_LONG).show();
@@ -299,11 +300,13 @@ public class MainActivity extends AppCompatActivity {
                     // Get the layout inflater
                     LayoutInflater inflater = MainActivity.this.getLayoutInflater();
 
-                    // Inflate and set the layout for the dialog
-                    // Pass null as the parent view because its going in the dialog layout
-                    builder.setView(inflater.inflate(R.layout.dialog_mensaje, null))
+                    //obtenemos la vista del layout personalizado pasandole la ruta al inflates
+                    View customView = inflater.inflate(R.layout.dialog_mensaje, null);
 
+                    //obtenemos el cuadro de texto a traves de la vista del layout personalizado, nos obliga a que sea final para utilizarlo en el onClick despues
+                    final EditText txtMensaje = customView.findViewById(R.id.txtMatch);
 
+                    builder.setView(customView)
 
 
                             // Add action buttons
@@ -311,8 +314,10 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
 
+                                    String mensaje = txtMensaje.getText().toString();
 
-                                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue("hola");
+
+                                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue(mensaje);
                                     FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey).child(keyDelPerroActual).setValue("match");
 
                                     misPerros.remove(keyDelPerroActual);
@@ -343,41 +348,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
-                            //builder.create();
-                            builder.show();
-
-
-
-
-
-
-
-
+                    //builder.create();
+                    builder.show();
 
 
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue("hola");
@@ -498,10 +473,6 @@ public class MainActivity extends AppCompatActivity {
 //
 //            return resultado;
 //        }
-
-
-
-
 
 
 }

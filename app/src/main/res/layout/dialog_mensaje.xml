@@ -8,36 +8,19 @@
 
     <EditText
         android:id="@+id/txtMatch"
+        style="@style/Animation.AppCompat.Dialog"
         android:layout_width="0dp"
         android:layout_height="163dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:gravity="top|left"
+        android:hint="Escribe tu mensaje..."
         android:inputType="textMultiLine"
+        android:padding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnOK"
-        android:layout_width="154dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="16dp"
-        android:text="Ok"
-        app:layout_constraintEnd_toStartOf="@+id/btnCancel"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtMatch" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="154dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="16dp"
-        android:text="Cancelar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnOK"
-        app:layout_constraintTop_toBottomOf="@+id/txtMatch" />
 </android.support.constraint.ConstraintLayout>
