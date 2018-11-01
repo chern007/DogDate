@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgPerroRow"
+        android:layout_width="73dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars[2]" />
+
+    <TextView
+        android:id="@+id/txtNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Nombre"
+        app:layout_constraintStart_toEndOf="@+id/imgPerroRow"
+        app:layout_constraintTop_toTopOf="@+id/imgPerroRow" />
+
+    <TextView
+        android:id="@+id/txtRaza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Raza"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPerroRow"
+        app:layout_constraintStart_toEndOf="@+id/imgPerroRow" />
+
+    <TextView
+        android:id="@+id/txtEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="124dp"
+        android:text="Email"
+        app:layout_constraintStart_toEndOf="@+id/imgPerroRow"
+        app:layout_constraintTop_toTopOf="@+id/imgPerroRow" />
+
+    <TextView
+        android:id="@+id/txtGenero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="124dp"
+        android:text="Genero"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPerroRow"
+        app:layout_constraintStart_toEndOf="@+id/imgPerroRow" />
+</android.support.constraint.ConstraintLayout>

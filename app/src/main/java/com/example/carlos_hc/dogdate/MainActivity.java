@@ -209,10 +209,13 @@ public class MainActivity extends AppCompatActivity {
                 actividadMiPerfil.putExtra("miPerroKey", miPerroKey);
                 startActivity(actividadMiPerfil);
 
-                
                 return true;
             case R.id.item3:
-                Toast.makeText(getApplicationContext(), "Item 3 Selected", Toast.LENGTH_LONG).show();
+                //iniciamos la actividad para ver mi perfil
+                Intent actividadListaMatchs = new Intent(getApplicationContext(),ListaMatchs.class);
+                actividadListaMatchs.putExtra("miPerroKey", miPerroKey);
+                startActivity(actividadListaMatchs);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -293,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
 
                     keyDelPerroActual = misPerros.entrySet().iterator().next().getKey();
 
-
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                     builder = new AlertDialog.Builder(MainActivity.this);
@@ -351,33 +353,6 @@ public class MainActivity extends AppCompatActivity {
                     //builder.create();
                     builder.show();
 
-
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue("hola");
-//                    FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey).child(keyDelPerroActual).setValue("match");
-//
-//                    misPerros.remove(keyDelPerroActual);
-//
-//                    if (misPerros.size() > 0) {
-//                        //cargamos la foto del primer perro
-//                        primerPerro = misPerros.entrySet().iterator().next();//volvemos a obtener el primer perro porque ha cambiado
-//                        cargarFotoPorEmail(((Perro) primerPerro.getValue()).getEmail());
-//                        txtEmail.setText("Email: " + ((Perro) primerPerro.getValue()).getEmail());
-//                        txtGenero.setText("Género: " + ((Perro) primerPerro.getValue()).getGenero());
-//                        txtNombre.setText("Nombre: " + ((Perro) primerPerro.getValue()).getNombre());
-//                        txtRaza.setText("Raza: " + ((Perro) primerPerro.getValue()).getRaza());
-//                    } else {
-//                        //cargamos la foto del comodin ya que no hay perros para cargar
-//                        imagenPerro.setImageResource(R.drawable.comodindog);
-//                        cargarFotoPorEmail("");
-//                        txtEmail.setText("Email: ");
-//                        txtGenero.setText("Género: ");
-//                        txtNombre.setText("Nombre: ");
-//                        txtRaza.setText("Raza: ");
-//                    }
-
                 }
 
 
@@ -430,50 +405,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
-//        //METODO QUE SACA UN DIALOGO PARA MANDAR UN MENSAJE
-//        private static EditText text = null;
-//        private String resultado = "";
-//
-//        private String sacarDialogo() {
-//
-//            // inflamos el custom dialog
-//            final Dialog dialog = new Dialog(MainActivity.this);
-//            dialog.setContentView(R.layout.dialog_mensaje);
-//            dialog.setTitle("Mensaje");
-//
-//            // capturamos los objetos
-//            text = (EditText) dialog.findViewById(R.id.txtMatch);
-//
-//            //boton aceptar
-//            Button btnOK = (Button) dialog.findViewById(R.id.btnOK);
-//            // if button is clicked, close the custom dialog
-//            btnOK.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View v) {
-//                    resultado = text.getText().toString();
-//                }
-//            });
-//
-//            //boton cancelar
-//            Button btnCancel = (Button) dialog.findViewById(R.id.btnOK);
-//            // if button is clicked, close the custom dialog
-//            btnCancel.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View v) {
-//                    resultado = "";
-//                    dialog.cancel();
-//                }
-//            });
-//
-//            dialog.show();
-//
-//            return resultado;
-//        }
-
 
 }
 

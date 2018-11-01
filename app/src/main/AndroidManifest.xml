@@ -32,7 +32,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".MiPerfil"></activity>
+        <activity android:name=".MiPerfil" />
+        <activity android:name=".ListaMatchs"></activity>
     </application>
 
 </manifest>
