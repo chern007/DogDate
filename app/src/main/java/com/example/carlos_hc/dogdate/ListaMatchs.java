@@ -34,6 +34,13 @@ public class ListaMatchs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_matchs);
 
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
+        getSupportActionBar().setTitle("  Matchs");
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+
         //obtenemos el contexto de la aplicacion
         contextoMatchs = getApplicationContext();
 
@@ -94,7 +101,6 @@ public class ListaMatchs extends AppCompatActivity {
 
                             }
                         });
-
 
                     }
 

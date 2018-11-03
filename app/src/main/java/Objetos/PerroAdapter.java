@@ -59,7 +59,7 @@ public class PerroAdapter extends RecyclerView.Adapter<PerroAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Perro miPerro = listaPerrosMatchs.get(position);
-        holder.nombre.setText("Nombre: " + miPerro.getNombre());
+        holder.nombre.setText(miPerro.getNombre());
         holder.raza.setText("Raza: " + miPerro.getRaza());
         holder.email.setText("Email: " + miPerro.getEmail());
         holder.genero.setText("Genero: " + miPerro.getGenero());

@@ -32,6 +32,12 @@ public class MiPerfil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mi_perfil);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
+        getSupportActionBar().setTitle("  Mi Perfil");
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+
 
         String miPerroKey = getIntent().getStringExtra("miPerroKey");
 

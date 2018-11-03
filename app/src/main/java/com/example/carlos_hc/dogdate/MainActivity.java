@@ -199,24 +199,26 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.item1:
-                Toast.makeText(getApplicationContext(), "Item 1 Selected", Toast.LENGTH_LONG).show();
+                //iniciamos la actividad para ver mi perfil
+                Intent actividadEditarPerfil = new Intent(getApplicationContext(),EditarPerfil.class);
+                actividadEditarPerfil.putExtra("miPerroEmail", emailLogin);
+                startActivity(actividadEditarPerfil);
                 return true;
-            case R.id.item2:
-                Toast.makeText(getApplicationContext(), "Item 2 Selected", Toast.LENGTH_LONG).show();
 
+            case R.id.item2:
                 //iniciamos la actividad para ver mi perfil
                 Intent actividadMiPerfil = new Intent(getApplicationContext(),MiPerfil.class);
                 actividadMiPerfil.putExtra("miPerroKey", miPerroKey);
                 startActivity(actividadMiPerfil);
-
                 return true;
+
             case R.id.item3:
                 //iniciamos la actividad para ver mi perfil
                 Intent actividadListaMatchs = new Intent(getApplicationContext(),ListaMatchs.class);
                 actividadListaMatchs.putExtra("miPerroKey", miPerroKey);
                 startActivity(actividadListaMatchs);
-
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
