@@ -1,9 +1,11 @@
 package com.example.carlos_hc.dogdate;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -94,6 +96,16 @@ public class MiPerfil extends AppCompatActivity {
                 .load(pathReference)
                 .into(imagenPerro);
 
+
+    }
+
+    public void editarPerfil(View view){
+
+
+        //iniciamos la actividad para ver mi perfil
+        Intent actividadEditarPerfil = new Intent(getApplicationContext(),EditarPerfil.class);
+        actividadEditarPerfil.putExtra("miPerroEmail", miPerro.getEmail());
+        startActivity(actividadEditarPerfil);
 
     }
 

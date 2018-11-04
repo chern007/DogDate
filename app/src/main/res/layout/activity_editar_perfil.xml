@@ -13,6 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:onClick="guardarCambios"
         android:text="Guardar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +29,7 @@
         android:hint="Nombre..."
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/imgPerroEdit" />
 
     <EditText
         android:id="@+id/txtGenero"
@@ -55,12 +56,13 @@
         app:layout_constraintTop_toBottomOf="@+id/txtNombre" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imgPerroEdit"
         android:layout_width="141dp"
         android:layout_height="141dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="32dp"
+        android:background="@drawable/borde_imagenes"
         app:layout_constraintEnd_toStartOf="@+id/btnCargarImagen"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -72,11 +74,12 @@
         android:id="@+id/btnCargarImagen"
         android:layout_width="89dp"
         android:layout_height="60dp"
+        android:onClick="obtenerFotoPath"
         android:text="Cargar imagen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/imgPerroEdit"
+        app:layout_constraintTop_toTopOf="@+id/imgPerroEdit" />
 
     <TextView
         android:id="@+id/txtEmail"
@@ -90,4 +93,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lblNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre:"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtNombre"
+        app:layout_constraintStart_toStartOf="@+id/txtNombre" />
+
+    <TextView
+        android:id="@+id/lblRaza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Raza:"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtRaza"
+        app:layout_constraintStart_toStartOf="@+id/txtRaza" />
+
+    <TextView
+        android:id="@+id/lblGenero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Genero:"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/txtGenero"
+        app:layout_constraintStart_toStartOf="@+id/txtGenero" />
+
 </android.support.constraint.ConstraintLayout>
