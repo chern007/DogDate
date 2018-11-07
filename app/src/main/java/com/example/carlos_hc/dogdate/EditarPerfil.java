@@ -1,5 +1,6 @@
 package com.example.carlos_hc.dogdate;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,15 +48,10 @@ public class EditarPerfil extends AppCompatActivity {
     Query queryMiPerro;
     String keyMiPerro;
 
+    Bitmap fotoBitmap;
+
     static final int REQUEST_IMAGE_GET = 1;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        cargarFotoPorEmail(miEmail.getText().toString());
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +63,12 @@ public class EditarPerfil extends AppCompatActivity {
         nombre = findViewById(R.id.txtNombre);
         raza = findViewById(R.id.txtRaza);
         genero = findViewById(R.id.txtGenero);
+
+
+        //***
+        //lo convertimos a Bitmap
+//        fotoBitmap = BitmapFactory.decodeFile("/storage/emulated/0/Download/puticlub.jpg");
+//        foto.setImageBitmap(fotoBitmap);
 
         //ponemos el email del perro actual
         miEmail.setText(getIntent().getStringExtra("miPerroEmail"));
@@ -131,9 +134,12 @@ public class EditarPerfil extends AppCompatActivity {
                     rutaImagen = myFile.getAbsolutePath();
 
                     //lo convertimos a Bitmap
-                    Bitmap fotoBitmap = BitmapFactory.decodeFile(rutaImagen);
+                    fotoBitmap = BitmapFactory.decodeFile(rutaImagen);
 
                     foto.setImageBitmap(fotoBitmap);//cargamos la foto elegida
+
+                    //actualizamos el bitmap de la clase padre
+                    //MiPerfil.obtenerBitmapFotoActual(miEmail.getText().toString());
 
                 } else {
                     Toast.makeText(this, "No has escogido un archivo .jpg", Toast.LENGTH_LONG).show();
@@ -152,7 +158,7 @@ public class EditarPerfil extends AppCompatActivity {
             StorageReference storageRef = storage.getReference().child("dogDate");
 
             Uri file = Uri.fromFile(new File(ruta));
-            StorageReference riversRef = storageRef.child(miEmail.getText().toString());
+            StorageReference riversRef = storageRef.child(miEmail.getText().toString() + ".jpg");
 
 
             UploadTask uploadTask = riversRef.putFile(file);
@@ -171,11 +177,22 @@ public class EditarPerfil extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                     Toast.makeText(EditarPerfil.this, "La foto se ha subido correctamente", Toast.LENGTH_LONG).show();
+
+
+                    //preparamos el intent que tiene que recibir la actividad anterior
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result",miEmail.getText().toString());
+                    setResult(Activity.RESULT_OK,returnIntent);
+
+                    //cerramos la actividad
+                    EditarPerfil.this.finish();
                 }
             });
 
-        }
+        }else{
 
+            finish();
+        }
 
     }
 
@@ -197,8 +214,7 @@ public class EditarPerfil extends AppCompatActivity {
             //escribimos la raza
             referenciaMiPerro.child("raza").setValue(raza.getText().toString());
 
-            //cerramos la actividad
-            this.finish();
+
 
         } else {
 
@@ -224,6 +240,8 @@ public class EditarPerfil extends AppCompatActivity {
         Glide.with(this /* context */)
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(foto);
 
 

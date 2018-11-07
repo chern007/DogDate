@@ -1,6 +1,9 @@
 package com.example.carlos_hc.dogdate;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,7 +44,6 @@ public class MiPerfil extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
         getSupportActionBar().setTitle("  Mi Perfil");
         getSupportActionBar().setDisplayUseLogoEnabled(true);
-
 
 
         String miPerroKey = getIntent().getStringExtra("miPerroKey");
@@ -94,20 +99,79 @@ public class MiPerfil extends AppCompatActivity {
         Glide.with(this /* context */)
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(imagenPerro);
 
 
     }
 
-    public void editarPerfil(View view){
+    private static int FOTO_GUARDADA = 1;
+
+    public void editarPerfil(View view) {
 
 
         //iniciamos la actividad para ver mi perfil
-        Intent actividadEditarPerfil = new Intent(getApplicationContext(),EditarPerfil.class);
+        Intent actividadEditarPerfil = new Intent(getApplicationContext(), EditarPerfil.class);
         actividadEditarPerfil.putExtra("miPerroEmail", miPerro.getEmail());
-        startActivity(actividadEditarPerfil);
+        startActivityForResult(actividadEditarPerfil,FOTO_GUARDADA);
 
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == FOTO_GUARDADA) {
+            if(resultCode == Activity.RESULT_OK){
+                String result =data.getStringExtra("result");
+
+                cargarFotoPorEmail(result);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
+
+
+
+
+    public static Bitmap bitmapFotoActual = null;
+
+    public static void obtenerBitmapFotoActual(String miPerroEmail) {
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReference().child("dogDate");
+
+        StorageReference islandRef = storageRef.child(miPerroEmail + ".jpg");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+
+                bitmapFotoActual = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        });
+
+    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        if(bitmapFotoActual!=null){
+//        imagenPerro.setImageBitmap(bitmapFotoActual);//cargamos la foto elegida
+//        }
+//
+//    }
 }
