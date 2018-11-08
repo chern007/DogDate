@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +88,12 @@ public class MiPerfil extends AppCompatActivity {
 
     private void cargarFotoPorEmail(String email) {
 
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
+        circularProgressDrawable.setStrokeWidth(10);
+        circularProgressDrawable.setCenterRadius(50);
+        circularProgressDrawable.start();
+
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         // Create a storage reference from our app
@@ -101,6 +108,7 @@ public class MiPerfil extends AppCompatActivity {
                 .load(pathReference)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
+                .placeholder(circularProgressDrawable)
                 .into(imagenPerro);
 
 
