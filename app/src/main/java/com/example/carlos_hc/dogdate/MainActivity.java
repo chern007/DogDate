@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -226,6 +227,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void cargarFotoPorEmail(String email) {
 
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
+        circularProgressDrawable.setStrokeWidth(10);
+        circularProgressDrawable.setCenterRadius(50);
+        circularProgressDrawable.start();
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         // Create a storage reference from our app
@@ -238,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
         Glide.with(this /* context */)
                 .using(new FirebaseImageLoader())
                 .load(pathReference)
+                .placeholder(circularProgressDrawable)
                 .into(imagenPerro);
 
 

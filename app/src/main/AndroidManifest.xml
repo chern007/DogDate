@@ -35,7 +35,7 @@
 
         <activity android:name=".MiPerfil" />
         <activity android:name=".ListaMatchs" />
-        <activity android:name=".EditarPerfil"></activity>
+        <activity android:name=".EditarPerfil" />
     </application>
 
 </manifest>

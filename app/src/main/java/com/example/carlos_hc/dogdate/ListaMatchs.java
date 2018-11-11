@@ -8,6 +8,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +26,8 @@ import Objetos.PerroAdapter;
 
 public class ListaMatchs extends AppCompatActivity {
 
-    private List<Perro> perrosListaMatchs = new ArrayList<>();;
+    private List<Perro> perrosListaMatchs = new ArrayList<>();
+    ;
     private RecyclerView recyclerView;
     private PerroAdapter perroAdapter;
     public Context contextoMatchs;
@@ -56,8 +60,26 @@ public class ListaMatchs extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(perroAdapter);
 
-        prepararPerros();
+        recyclerView.addOnItemTouchListener(new ListaMatchsOnClickListener(getApplicationContext(), recyclerView, new ListaMatchsOnClickListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
 
+                Toast.makeText(getApplicationContext(), position + " is selected!", Toast.LENGTH_SHORT).show();
+
+                Perro itemPerroSeleccionado = perrosListaMatchs.get(position);
+
+                Log.i("INFO: ", "Hasta aqui Ok");
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+
+        }));
+
+        prepararPerros();
 
     }
 
@@ -104,7 +126,6 @@ public class ListaMatchs extends AppCompatActivity {
 
                     }
 
-                    //perroAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -113,7 +134,6 @@ public class ListaMatchs extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-
 
 
         });
