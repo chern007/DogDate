@@ -1,10 +1,15 @@
 package com.example.carlos_hc.dogdate;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -12,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class RespuestaMatchs extends AppCompatActivity {
@@ -99,6 +106,63 @@ public class RespuestaMatchs extends AppCompatActivity {
                                 Log.i("tusa","se ha cargado el diccionario con todos los mensajes");
                             }
                         }
+
+                        //creamos Spannables para pintar lo que vamos a escribir
+
+                        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+
+
+
+
+                        String perroHablando = "";
+
+                        String parrafoMensajes = "";
+
+
+                        HashMap<String,Integer> nombreColor = new HashMap<String,Integer>();
+                        nombreColor.put(nombreMiPerro,Color.BLACK);
+                        nombreColor.put(nombreOtroPerro,Color.RED);
+
+                        for ( Map.Entry<Calendar,String> mensaje : TODOSlosMENSAJES.entrySet()) {
+
+                            if (perroHablando.equals("") ){
+
+                                perroHablando = mensaje.getValue().split(":\n")[0];
+
+                                //parrafoMensajes += mensaje.getValue();
+
+                                SpannableString lineas = new SpannableString(mensaje.getValue());
+                                lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length(), 0);
+                                builder.append(lineas);
+
+
+                            }else{
+
+                                if (mensaje.getValue().startsWith(perroHablando)) {
+
+                                    //parrafoMensajes += "\n" + mensaje.getValue();
+
+                                    SpannableString lineas = new SpannableString("\n\n" + mensaje.getValue());
+                                    lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length() + 2, 0);
+                                    builder.append(lineas);
+
+                                }else{
+
+                                    perroHablando = mensaje.getValue().split(":\n")[0];
+
+                                    SpannableString lineas = new SpannableString("\n\n" + mensaje.getValue());
+                                    lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length() + 2, 0);
+                                    builder.append(lineas);
+
+                                    //parrafoMensajes += "\n" + mensaje.getValue();
+
+                                }
+
+                            }
+                        }
+
+                        tableroMensajes.setText(builder, TextView.BufferType.SPANNABLE);
 
                     }
 
