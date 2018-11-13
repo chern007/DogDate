@@ -1,6 +1,7 @@
 package com.example.carlos_hc.dogdate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,17 +28,22 @@ import Objetos.PerroAdapter;
 public class ListaMatchs extends AppCompatActivity {
 
     private List<Perro> perrosListaMatchs = new ArrayList<>();
-    ;
+
     private RecyclerView recyclerView;
     private PerroAdapter perroAdapter;
     public Context contextoMatchs;
     String miPerroKey;
+    String nombreMiPerro;
+
+    List<String> listaDeKeysOrdenadas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_matchs);
 
+        //iniciamos la lista de keys
+        listaDeKeysOrdenadas = new ArrayList<>();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
@@ -50,6 +56,8 @@ public class ListaMatchs extends AppCompatActivity {
 
         //obtenemos la key de nuestro perro
         miPerroKey = getIntent().getStringExtra("miPerroKey");
+        //obtenemos el nomnbre de nuestro perro
+        nombreMiPerro = getIntent().getStringExtra("miPerroNombre");
 
         recyclerView = findViewById(R.id.lstMatchs);
 
@@ -67,6 +75,14 @@ public class ListaMatchs extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), position + " is selected!", Toast.LENGTH_SHORT).show();
 
                 Perro itemPerroSeleccionado = perrosListaMatchs.get(position);
+
+                //iniciamos la actividad para ver mi perfil
+                Intent actividadPanelMensajes = new Intent(getApplicationContext(),RespuestaMatchs.class);
+                actividadPanelMensajes.putExtra("claveMiPerro", miPerroKey);
+                actividadPanelMensajes.putExtra("claveOtroPerro", listaDeKeysOrdenadas.get(position));
+                actividadPanelMensajes.putExtra("nombreMiPerro", nombreMiPerro);
+                actividadPanelMensajes.putExtra("nombreOtroPerro", itemPerroSeleccionado.getNombre());
+                startActivity(actividadPanelMensajes);
 
                 Log.i("INFO: ", "Hasta aqui Ok");
 
@@ -98,8 +114,7 @@ public class ListaMatchs extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                         String clave = snapshot.getKey();
-                        String mensaje = (String) snapshot.getValue();
-
+                        listaDeKeysOrdenadas.add(clave);//añadimmos la clave a la lista de keys
 
                         FirebaseDatabase.getInstance().getReference("usuarios").child(clave).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -138,48 +153,10 @@ public class ListaMatchs extends AppCompatActivity {
 
         });
 
-
-//        Perro ringo = new Perro();
-//        ringo.setNombre("ringo");
-//        ringo.setRaza("pinscher");
-//        ringo.setEmail("ringo@gmail.com");
-//        ringo.setGenero("macho");
-//        perrosListaMatchs.add(ringo);
-//
-//        Perro nala = new Perro();
-//        nala.setNombre("nala");
-//        nala.setRaza("yorkshike");
-//        nala.setEmail("nala@gmail.com");
-//        nala.setGenero("hembra");
-//        perrosListaMatchs.add(nala);
-
-
-        //perroAdapter.notifyDataSetChanged();
-
     }
 
 
-//    private void tusa(String clave){
-//
-//        FirebaseDatabase.getInstance().getReference("usuarios").child(clave).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
-//
-//                if (dataSnapshot2.exists()) {
-//
-//                        //añadimos el perro a nuestra lista de perros
-//                        perrosListaMatchs.add(dataSnapshot2.getValue(Perro.class));
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
+
 
 
 }

@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     Map.Entry<String, Object> primerPerro;
     String keyDelPerroActual;
 
+    String fecha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 //iniciamos la actividad para ver mi perfil
                 Intent actividadListaMatchs = new Intent(getApplicationContext(),ListaMatchs.class);
                 actividadListaMatchs.putExtra("miPerroKey", miPerroKey);
+                actividadListaMatchs.putExtra("miPerroNombre", miPerro.getNombre());
                 startActivity(actividadListaMatchs);
                 return true;
 
@@ -317,6 +320,17 @@ public class MainActivity extends AppCompatActivity {
                     //obtenemos el cuadro de texto a traves de la vista del layout personalizado, nos obliga a que sea final para utilizarlo en el onClick despues
                     final EditText txtMensaje = customView.findViewById(R.id.txtMatch);
 
+                    Calendar ahoraCal = Calendar.getInstance();
+                    int dia = ahoraCal.get(Calendar.DAY_OF_MONTH);
+                    int mes = ahoraCal.get(Calendar.MONTH) + 1;
+                    int año = ahoraCal.get(Calendar.YEAR);
+                    int hora =ahoraCal.get(Calendar.HOUR_OF_DAY);
+                    int minutos = ahoraCal.get(Calendar.MINUTE);
+                    int segundos =  ahoraCal.get(Calendar.SECOND);
+
+                    fecha = dia +"/"+ mes +"/"+ año +" "+hora +":"+ minutos +":"+ segundos;
+
+
                     builder.setView(customView)
 
 
@@ -327,8 +341,10 @@ public class MainActivity extends AppCompatActivity {
 
                                     String mensaje = txtMensaje.getText().toString();
 
+                                    DatabaseReference nodoMensaje = FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensajes").push();
+                                    nodoMensaje.child("contenido").setValue(mensaje);
+                                    nodoMensaje.child("fecha").setValue(fecha);
 
-                                    FirebaseDatabase.getInstance().getReference("matches").child(keyDelPerroActual).child(miPerroKey).child("mensaje").setValue(mensaje);
                                     FirebaseDatabase.getInstance().getReference("no_load").child(miPerroKey).child(keyDelPerroActual).setValue("match");
 
                                     misPerros.remove(keyDelPerroActual);

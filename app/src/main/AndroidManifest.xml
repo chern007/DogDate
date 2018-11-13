@@ -36,6 +36,8 @@
         <activity android:name=".MiPerfil" />
         <activity android:name=".ListaMatchs" />
         <activity android:name=".EditarPerfil" />
+        <activity android:name=".MessageListActivity" />
+        <activity android:name=".RespuestaMatchs"></activity>
     </application>
 
 </manifest>
