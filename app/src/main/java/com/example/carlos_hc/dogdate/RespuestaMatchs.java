@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -31,10 +32,17 @@ public class RespuestaMatchs extends AppCompatActivity {
 
     TreeMap<Calendar,String> TODOSlosMENSAJES;
 
+    DatabaseReference listenerMensajesMiperro;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_respuesta_matchs);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
+        getSupportActionBar().setTitle("  Mensajes");
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         //iniciamos el diccionario con todos los mensajes
         TODOSlosMENSAJES = new TreeMap<>();
@@ -47,7 +55,10 @@ public class RespuestaMatchs extends AppCompatActivity {
         nombreMiPerro = getIntent().getStringExtra("nombreMiPerro");
         nombreOtroPerro = getIntent().getStringExtra("nombreOtroPerro");
 
-        FirebaseDatabase.getInstance().getReference("matches").child(claveMiPerro).child(claveOtroPerro).child("mensajes").addListenerForSingleValueEvent(new ValueEventListener() {
+
+        listenerMensajesMiperro = FirebaseDatabase.getInstance().getReference("matches").child(claveMiPerro);
+
+        listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -189,6 +200,14 @@ public class RespuestaMatchs extends AppCompatActivity {
         });
 
 
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //listenerMensajesMiperro.removeEventListener();
 
     }
 }

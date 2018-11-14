@@ -9,16 +9,52 @@
     <EditText
         android:id="@+id/txtTableroMensajes"
         android:layout_width="350dp"
-        android:layout_height="360dp"
+        android:layout_height="376dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/borde_imagenes"
+        android:editable="false"
         android:ems="10"
         android:gravity="top|left"
-        android:inputType="textMultiLine"
+        android:inputType="none"
         android:padding="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/txtMiMensaje"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread" />
+
+    <Button
+        android:id="@+id/btnEnviar"
+        android:layout_width="78dp"
+        android:layout_height="82dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Enviar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtMiMensaje"
+        app:layout_constraintTop_toTopOf="@+id/txtMiMensaje"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/txtMiMensaje"
+        android:layout_width="0dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="escribe tu mensaje..."
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnEnviar"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTableroMensajes" />
 </android.support.constraint.ConstraintLayout>
