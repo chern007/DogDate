@@ -1,13 +1,18 @@
 package com.example.carlos_hc.dogdate;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -32,12 +37,20 @@ public class RespuestaMatchs extends AppCompatActivity {
 
     TreeMap<Calendar,String> TODOSlosMENSAJES;
 
+    //para gestionar los eventos de escucha de la base de datos
     DatabaseReference listenerMensajesMiperro;
+    ValueEventListener eventoEscuchaMensajes;
+
+    EditText txtMiMensaje;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_respuesta_matchs);
+
+
+
+        txtMiMensaje = findViewById(R.id.txtMiMensaje);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
@@ -58,11 +71,14 @@ public class RespuestaMatchs extends AppCompatActivity {
 
         listenerMensajesMiperro = FirebaseDatabase.getInstance().getReference("matches").child(claveMiPerro);
 
-        listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").addListenerForSingleValueEvent(new ValueEventListener() {
+        eventoEscuchaMensajes = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
+
+                    //limpiamos la lista de mensajes
+                    TODOSlosMENSAJES.clear();
 
                     for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
 
@@ -93,6 +109,8 @@ public class RespuestaMatchs extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.exists()) {
+
+
 
                             for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
 
@@ -129,7 +147,6 @@ public class RespuestaMatchs extends AppCompatActivity {
                         String perroHablando = "";
 
                         String parrafoMensajes = "";
-
 
                         HashMap<String,Integer> nombreColor = new HashMap<String,Integer>();
                         nombreColor.put(nombreMiPerro,Color.BLACK);
@@ -173,7 +190,10 @@ public class RespuestaMatchs extends AppCompatActivity {
                             }
                         }
 
+                        //tableroMensajes.getText().clear();
                         tableroMensajes.setText(builder, TextView.BufferType.SPANNABLE);
+                        //nos vamos a la ultima linea
+                        tableroMensajes.setSelection(tableroMensajes.getText().length());
 
                     }
 
@@ -184,20 +204,15 @@ public class RespuestaMatchs extends AppCompatActivity {
                 });
 
 
-
-
-
-
-
-
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        //listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").addValueEventListener(eventoEscuchaMensajes);
 
 
 
@@ -207,7 +222,58 @@ public class RespuestaMatchs extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        //listenerMensajesMiperro.removeEventListener();
+        listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").removeEventListener(eventoEscuchaMensajes);
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").addValueEventListener(eventoEscuchaMensajes);
+    }
+
+    public void enviarMensaje(View view){
+
+        String mensaje = txtMiMensaje.getText().toString();
+
+        //sacamos la fecha
+
+        Calendar ahoraCal = Calendar.getInstance();
+        int dia = ahoraCal.get(Calendar.DAY_OF_MONTH);
+        int mes = ahoraCal.get(Calendar.MONTH) + 1;
+        int año = ahoraCal.get(Calendar.YEAR);
+        int hora =ahoraCal.get(Calendar.HOUR_OF_DAY);
+        int minutos = ahoraCal.get(Calendar.MINUTE);
+        int segundos =  ahoraCal.get(Calendar.SECOND);
+
+        String fecha = dia +"/"+ mes +"/"+ año +" "+hora +":"+ minutos +":"+ segundos;
+
+        DatabaseReference nodoMensaje = FirebaseDatabase.getInstance().getReference("matches").child(claveOtroPerro).child(claveMiPerro).child("mensajes").push();
+        nodoMensaje.child("contenido").setValue(mensaje);
+        nodoMensaje.child("fecha").setValue(fecha);
+
+        listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").addListenerForSingleValueEvent(eventoEscuchaMensajes);
+
+        //limpiamos el mensaje que acabamos de enviar
+        txtMiMensaje.getText().clear();
+
+        hideKeyboard(RespuestaMatchs.this);
+
+    }
+
+    //Metodo que oculta el teclado si esta activo
+    @NonNull
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
 }
