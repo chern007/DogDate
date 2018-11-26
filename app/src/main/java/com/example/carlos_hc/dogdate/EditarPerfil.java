@@ -59,6 +59,12 @@ public class EditarPerfil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
+        getSupportActionBar().setTitle("  Configuración");
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+
         miEmail = findViewById(R.id.txtEmail);
         foto = findViewById(R.id.imgPerroEdit);
         nombre = findViewById(R.id.txtNombre);

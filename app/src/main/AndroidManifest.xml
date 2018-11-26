@@ -10,9 +10,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/dogdatelogo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/dogdatelogo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
@@ -33,11 +33,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".MiPerfil" />
-        <activity android:name=".ListaMatchs" />
-        <activity android:name=".EditarPerfil" />
-        <activity android:name=".MessageListActivity" />
-        <activity android:name=".RespuestaMatchs"></activity>
+        <activity android:name=".MiPerfil" android:screenOrientation="portrait"/>
+        <activity android:name=".ListaMatchs" android:screenOrientation="portrait"/>
+        <activity android:name=".EditarPerfil" android:screenOrientation="portrait"/>
+        <activity android:name=".MessageListActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".RespuestaMatchs" android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

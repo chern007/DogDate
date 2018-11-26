@@ -72,8 +72,6 @@ public class ListaMatchs extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
 
-                Toast.makeText(getApplicationContext(), position + " is selected!", Toast.LENGTH_SHORT).show();
-
                 Perro itemPerroSeleccionado = perrosListaMatchs.get(position);
 
                 //iniciamos la actividad para ver mi perfil
