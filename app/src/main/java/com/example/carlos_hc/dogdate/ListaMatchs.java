@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,29 +38,7 @@ public class ListaMatchs extends AppCompatActivity {
 
     List<String> listaDeKeysOrdenadas;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_matchs);
-
-        //iniciamos la lista de keys
-        listaDeKeysOrdenadas = new ArrayList<>();
-
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
-        getSupportActionBar().setTitle("  Matchs");
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-
-
-        //obtenemos el contexto de la aplicacion
-        contextoMatchs = getApplicationContext();
-
-        //obtenemos la key de nuestro perro
-        miPerroKey = getIntent().getStringExtra("miPerroKey");
-        //obtenemos el nomnbre de nuestro perro
-        nombreMiPerro = getIntent().getStringExtra("miPerroNombre");
-
-        recyclerView = findViewById(R.id.lstMatchs);
+    private void listarPerros(){
 
         perroAdapter = new PerroAdapter(perrosListaMatchs, contextoMatchs);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -95,6 +74,60 @@ public class ListaMatchs extends AppCompatActivity {
 
         prepararPerros();
 
+
+
+    }
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lista_matchs);
+
+        //iniciamos la lista de keys
+        listaDeKeysOrdenadas = new ArrayList<>();
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
+        getSupportActionBar().setTitle("  Matchs");
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        //obtenemos el contexto de la aplicacion
+        contextoMatchs = getApplicationContext();
+
+        //obtenemos la key de nuestro perro
+        miPerroKey = getIntent().getStringExtra("miPerroKey");
+        //obtenemos el nomnbre de nuestro perro
+        nombreMiPerro = getIntent().getStringExtra("miPerroNombre");
+
+        recyclerView = findViewById(R.id.lstMatchs);
+
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        listarPerros();
     }
 
     private void prepararPerros() {

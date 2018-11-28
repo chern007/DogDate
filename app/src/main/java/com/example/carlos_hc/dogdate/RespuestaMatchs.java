@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -56,6 +57,7 @@ public class RespuestaMatchs extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
         getSupportActionBar().setTitle("  Mensajes");
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //iniciamos el diccionario con todos los mensajes
         TODOSlosMENSAJES = new TreeMap<>();
@@ -215,6 +217,19 @@ public class RespuestaMatchs extends AppCompatActivity {
         //listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").addValueEventListener(eventoEscuchaMensajes);
 
 
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
 
     }
 

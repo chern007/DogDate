@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -63,6 +64,7 @@ public class EditarPerfil extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
         getSupportActionBar().setTitle("  Configuración");
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         miEmail = findViewById(R.id.txtEmail);
@@ -115,6 +117,19 @@ public class EditarPerfil extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -198,6 +213,11 @@ public class EditarPerfil extends AppCompatActivity {
 
         }else{
 
+            //preparamos el intent que tiene que recibir la actividad anterior
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result",miEmail.getText().toString());
+            setResult(Activity.RESULT_OK,returnIntent);
+
             finish();
         }
 
@@ -209,7 +229,6 @@ public class EditarPerfil extends AppCompatActivity {
         //subimos la foto a la nube
         if (foto.getDrawable() != null && !nombre.getText().toString().equals("") && !raza.getText().toString().equals("") && !genero.getText().toString().equals("")) {
 
-            subirFotoaNube(rutaImagen);
 
             //obtenemos la referencia de nuestro perro de firebase
             DatabaseReference referenciaMiPerro = FirebaseDatabase.getInstance().getReference("usuarios").child(keyMiPerro);
@@ -221,6 +240,7 @@ public class EditarPerfil extends AppCompatActivity {
             //escribimos la raza
             referenciaMiPerro.child("raza").setValue(raza.getText().toString());
 
+            subirFotoaNube(rutaImagen);
 
 
         } else {

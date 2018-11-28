@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MiPerfil">
 
+
+
     <TextView
         android:id="@+id/txtNombre2"
         android:layout_width="wrap_content"
@@ -85,6 +87,7 @@
         app:layout_constraintGuide_percent="0.50121653"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btDiscart" />
+
 
     <Button
         android:id="@+id/btnEditarPerfil"

@@ -8,7 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,11 +39,29 @@ public class MiPerfil extends AppCompatActivity {
     TextView txtGenero;
     TextView txtEmail;
 
+    DatabaseReference infoMiPerro;
+    ValueEventListener hayCambiosMiPerro;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mi_perfil);
 
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.mipmap.dogdatelogo_round);
         getSupportActionBar().setTitle("  Mi Perfil");
@@ -55,9 +76,10 @@ public class MiPerfil extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail2);
         txtRaza = findViewById(R.id.txtRaza2);
 
+        infoMiPerro = FirebaseDatabase.getInstance().getReference("usuarios").child(miPerroKey);
 
         //sacamos los usuarios - los match y los discarts (son los que se presentaran en las cartas de presentación)
-        FirebaseDatabase.getInstance().getReference("usuarios").child(miPerroKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        hayCambiosMiPerro = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -80,10 +102,20 @@ public class MiPerfil extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        infoMiPerro.addListenerForSingleValueEvent(hayCambiosMiPerro);
 
 
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        infoMiPerro.addListenerForSingleValueEvent(hayCambiosMiPerro);
+//
+//    }
 
 
     private void cargarFotoPorEmail(String email) {
@@ -135,6 +167,7 @@ public class MiPerfil extends AppCompatActivity {
                 String result =data.getStringExtra("result");
 
                 cargarFotoPorEmail(result);
+                infoMiPerro.addListenerForSingleValueEvent(hayCambiosMiPerro);//volvemos a consultar los datos de nuestro perro
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -173,13 +206,6 @@ public class MiPerfil extends AppCompatActivity {
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        if(bitmapFotoActual!=null){
-//        imagenPerro.setImageBitmap(bitmapFotoActual);//cargamos la foto elegida
-//        }
-//
-//    }
+
+
 }
