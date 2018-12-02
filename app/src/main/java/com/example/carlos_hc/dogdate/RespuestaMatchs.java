@@ -44,6 +44,8 @@ public class RespuestaMatchs extends AppCompatActivity {
 
     EditText txtMiMensaje;
 
+    boolean fechaPreparada;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,8 @@ public class RespuestaMatchs extends AppCompatActivity {
 
                 if (dataSnapshot.exists()) {
 
+                    fechaPreparada = true;
+
                     //limpiamos la lista de mensajes
                     TODOSlosMENSAJES.clear();
 
@@ -87,124 +91,137 @@ public class RespuestaMatchs extends AppCompatActivity {
 
                         String mensaje = snapShot.child("contenido").getValue().toString();
 
-                        String preFecha = snapShot.child("fecha").getValue().toString();
+                        for ( DataSnapshot tusa : snapShot.getChildren()) {
 
-                        String[] fecha_hora = preFecha.split(" ");
+                            Log.i("--->",tusa.getValue().toString() );
+                        }
 
-                        String[] dia_mes_año = fecha_hora[0].split("/");
+                        //vemos si todos los mensajes tienen fecha asignada
+                        if(snapShot.child("fecha").getValue() != null){
 
-                        String[] hora_minutos_segundos = fecha_hora[1].split(":");
+                            String preFecha = snapShot.child("fecha").getValue().toString();
 
-                        Calendar fecha = Calendar.getInstance();
+                            String[] fecha_hora = preFecha.split(" ");
 
-                        fecha.set(Integer.parseInt(dia_mes_año[2]), Integer.parseInt(dia_mes_año[1]), Integer.parseInt(dia_mes_año[0]), Integer.parseInt(hora_minutos_segundos[0]), Integer.parseInt(hora_minutos_segundos[1]), Integer.parseInt(hora_minutos_segundos[2]));
+                            String[] dia_mes_año = fecha_hora[0].split("/");
 
-                        //añadimos el mensaje a la lista
-                        TODOSlosMENSAJES.put(fecha,  nombreOtroPerro + ":\n" + mensaje);
+                            String[] hora_minutos_segundos = fecha_hora[1].split(":");
+
+                            Calendar fecha = Calendar.getInstance();
+
+                            fecha.set(Integer.parseInt(dia_mes_año[2]), Integer.parseInt(dia_mes_año[1]), Integer.parseInt(dia_mes_año[0]), Integer.parseInt(hora_minutos_segundos[0]), Integer.parseInt(hora_minutos_segundos[1]), Integer.parseInt(hora_minutos_segundos[2]));
+
+                            //añadimos el mensaje a la lista
+                            TODOSlosMENSAJES.put(fecha,  nombreOtroPerro + ":\n" + mensaje);
+                        }else{
+
+                            fechaPreparada = false;
+
+                        }
+
+
                     }
                 }
 
-                //EXAMINAMOS AHORA SI EL OTRO PERRO TIENE MENSAJES NUESTROS
 
-                FirebaseDatabase.getInstance().getReference("matches").child(claveOtroPerro).child(claveMiPerro).child("mensajes").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(fechaPreparada) {
+                    //EXAMINAMOS AHORA SI EL OTRO PERRO TIENE MENSAJES NUESTROS
 
-                        if (dataSnapshot.exists()) {
+                    FirebaseDatabase.getInstance().getReference("matches").child(claveOtroPerro).child(claveMiPerro).child("mensajes").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-
-
-                            for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
+                            if (dataSnapshot.exists()) {
 
 
-                                String mensaje = snapShot.child("contenido").getValue().toString();
+                                for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
 
-                                String preFecha = snapShot.child("fecha").getValue().toString();
 
-                                String[] fecha_hora = preFecha.split(" ");
+                                    String mensaje = snapShot.child("contenido").getValue().toString();
 
-                                String[] dia_mes_año = fecha_hora[0].split("/");
+                                    String preFecha = snapShot.child("fecha").getValue().toString();
 
-                                String[] hora_minutos_segundos = fecha_hora[1].split(":");
+                                    String[] fecha_hora = preFecha.split(" ");
 
-                                Calendar fecha = Calendar.getInstance();
+                                    String[] dia_mes_año = fecha_hora[0].split("/");
 
-                                fecha.set(Integer.parseInt(dia_mes_año[2]), Integer.parseInt(dia_mes_año[1]), Integer.parseInt(dia_mes_año[0]), Integer.parseInt(hora_minutos_segundos[0]), Integer.parseInt(hora_minutos_segundos[1]), Integer.parseInt(hora_minutos_segundos[2]));
+                                    String[] hora_minutos_segundos = fecha_hora[1].split(":");
 
-                                //añadimos el mensaje a la lista
-                                TODOSlosMENSAJES.put(fecha, nombreMiPerro + ":\n" + mensaje);
+                                    Calendar fecha = Calendar.getInstance();
 
-                                Log.i("tusa","se ha cargado el diccionario con todos los mensajes");
+                                    fecha.set(Integer.parseInt(dia_mes_año[2]), Integer.parseInt(dia_mes_año[1]), Integer.parseInt(dia_mes_año[0]), Integer.parseInt(hora_minutos_segundos[0]), Integer.parseInt(hora_minutos_segundos[1]), Integer.parseInt(hora_minutos_segundos[2]));
+
+                                    //añadimos el mensaje a la lista
+                                    TODOSlosMENSAJES.put(fecha, nombreMiPerro + ":\n" + mensaje);
+
+                                    Log.i("tusa", "se ha cargado el diccionario con todos los mensajes");
+                                }
                             }
-                        }
 
-                        //creamos Spannables para pintar lo que vamos a escribir
+                            //creamos Spannables para pintar lo que vamos a escribir
 
-                        SpannableStringBuilder builder = new SpannableStringBuilder();
-
+                            SpannableStringBuilder builder = new SpannableStringBuilder();
 
 
+                            String perroHablando = "";
 
+                            String parrafoMensajes = "";
 
-                        String perroHablando = "";
+                            HashMap<String, Integer> nombreColor = new HashMap<String, Integer>();
+                            nombreColor.put(nombreMiPerro, Color.rgb(51, 153, 51));
+                            nombreColor.put(nombreOtroPerro, Color.rgb(0, 153, 153));
 
-                        String parrafoMensajes = "";
+                            for (Map.Entry<Calendar, String> mensaje : TODOSlosMENSAJES.entrySet()) {
 
-                        HashMap<String,Integer> nombreColor = new HashMap<String,Integer>();
-                        nombreColor.put(nombreMiPerro,Color.rgb(51, 153, 51));
-                        nombreColor.put(nombreOtroPerro,Color.rgb(0, 153, 153));
-
-                        for ( Map.Entry<Calendar,String> mensaje : TODOSlosMENSAJES.entrySet()) {
-
-                            if (perroHablando.equals("") ){
-
-                                perroHablando = mensaje.getValue().split(":\n")[0];
-
-                                //parrafoMensajes += mensaje.getValue();
-
-                                SpannableString lineas = new SpannableString(mensaje.getValue());
-                                lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length(), 0);
-                                builder.append(lineas);
-
-
-                            }else{
-
-                                if (mensaje.getValue().startsWith(perroHablando)) {
-
-                                    //parrafoMensajes += "\n" + mensaje.getValue();
-
-                                    SpannableString lineas = new SpannableString("\n\n" + mensaje.getValue());
-                                    lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length() + 2, 0);
-                                    builder.append(lineas);
-
-                                }else{
+                                if (perroHablando.equals("")) {
 
                                     perroHablando = mensaje.getValue().split(":\n")[0];
 
-                                    SpannableString lineas = new SpannableString("\n\n" + mensaje.getValue());
-                                    lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length() + 2, 0);
+                                    //parrafoMensajes += mensaje.getValue();
+
+                                    SpannableString lineas = new SpannableString(mensaje.getValue());
+                                    lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length(), 0);
                                     builder.append(lineas);
 
-                                    //parrafoMensajes += "\n" + mensaje.getValue();
+
+                                } else {
+
+                                    if (mensaje.getValue().startsWith(perroHablando)) {
+
+                                        //parrafoMensajes += "\n" + mensaje.getValue();
+
+                                        SpannableString lineas = new SpannableString("\n\n" + mensaje.getValue());
+                                        lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length() + 2, 0);
+                                        builder.append(lineas);
+
+                                    } else {
+
+                                        perroHablando = mensaje.getValue().split(":\n")[0];
+
+                                        SpannableString lineas = new SpannableString("\n\n" + mensaje.getValue());
+                                        lineas.setSpan(new ForegroundColorSpan(nombreColor.get(perroHablando)), 0, mensaje.getValue().length() + 2, 0);
+                                        builder.append(lineas);
+
+                                        //parrafoMensajes += "\n" + mensaje.getValue();
+
+                                    }
 
                                 }
-
                             }
+
+                            //tableroMensajes.getText().clear();
+                            tableroMensajes.setText(builder, TextView.BufferType.SPANNABLE);
+                            //nos vamos a la ultima linea
+                            tableroMensajes.setSelection(tableroMensajes.getText().length());
+
                         }
 
-                        //tableroMensajes.getText().clear();
-                        tableroMensajes.setText(builder, TextView.BufferType.SPANNABLE);
-                        //nos vamos a la ultima linea
-                        tableroMensajes.setSelection(tableroMensajes.getText().length());
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
+                        }
+                    });
+                }
 
             }
 

@@ -4,6 +4,7 @@ package com.example.carlos_hc.dogdate;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     TextView txtGenero;
     TextView txtEmail;
 
+    CircularProgressDrawable circularProgressDrawable;
+    StorageReference pathReference;
 
     AlertDialog.Builder builder;
     Map.Entry<String, Object> primerPerro;
@@ -230,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void cargarFotoPorEmail(String email) {
 
-        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
+        circularProgressDrawable = new CircularProgressDrawable(this);
         circularProgressDrawable.setStrokeWidth(10);
         circularProgressDrawable.setCenterRadius(50);
         circularProgressDrawable.start();
@@ -241,14 +247,34 @@ public class MainActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         // Create a reference with an initial file path and name
-        StorageReference pathReference = storageRef.child("dogDate/" + email + ".jpg");
+        pathReference = storageRef.child("dogDate/" + email + ".jpg");
 
-        // Load the image using Glide
-        Glide.with(this /* context */)
-                .using(new FirebaseImageLoader())
-                .load(pathReference)
-                .placeholder(circularProgressDrawable)
-                .into(imagenPerro);
+        //comprobamos si existe la foto
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //EXISTE LA IMAGEN EN FIREBASE
+                // Got the download URL for 'users/me/profile.png'
+
+                // Load the image using Glide
+                Glide.with(MainActivity.this /* context */)
+                        .using(new FirebaseImageLoader())
+                        .load(pathReference)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .placeholder(circularProgressDrawable)
+                        .into(imagenPerro);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //NO ESXISTE LA IMAGEN
+                // File not found
+
+                imagenPerro.setImageResource(R.drawable.comodindog);
+            }
+        });
 
 
     }
