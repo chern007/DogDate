@@ -37,7 +37,7 @@
         <activity android:name=".ListaMatchs" android:screenOrientation="portrait"/>
         <activity android:name=".EditarPerfil" android:screenOrientation="portrait"/>
         <activity android:name=".MessageListActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".RespuestaMatchs" android:screenOrientation="portrait"></activity>
+        <activity android:name=".RespuestaMatchs" android:screenOrientation="portrait" android:noHistory="true"></activity>
     </application>
 
 </manifest>

@@ -228,6 +228,7 @@ public class RespuestaMatchs extends AppCompatActivity {
                 this.finish();
         }
 
+        return false;
     }
 
     @Override
