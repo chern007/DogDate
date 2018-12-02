@@ -151,8 +151,8 @@ public class RespuestaMatchs extends AppCompatActivity {
                         String parrafoMensajes = "";
 
                         HashMap<String,Integer> nombreColor = new HashMap<String,Integer>();
-                        nombreColor.put(nombreMiPerro,Color.BLACK);
-                        nombreColor.put(nombreOtroPerro,Color.RED);
+                        nombreColor.put(nombreMiPerro,Color.rgb(51, 153, 51));
+                        nombreColor.put(nombreOtroPerro,Color.rgb(0, 153, 153));
 
                         for ( Map.Entry<Calendar,String> mensaje : TODOSlosMENSAJES.entrySet()) {
 
@@ -226,10 +226,7 @@ public class RespuestaMatchs extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
-                return true;
         }
-
-        return super.onOptionsItemSelected(item);
 
     }
 

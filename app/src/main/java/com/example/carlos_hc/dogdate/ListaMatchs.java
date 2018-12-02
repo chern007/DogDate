@@ -141,6 +141,7 @@ public class ListaMatchs extends AppCompatActivity {
                 //recorremos todos los match
                 if (dataSnapshot.exists()) {
 
+                    perrosListaMatchs.clear();
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 

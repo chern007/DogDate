@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,10 @@ public class MiPerfil extends AppCompatActivity {
 
     DatabaseReference infoMiPerro;
     ValueEventListener hayCambiosMiPerro;
+
+    CircularProgressDrawable circularProgressDrawable;
+    StorageReference pathReference;
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -120,7 +125,7 @@ public class MiPerfil extends AppCompatActivity {
 
     private void cargarFotoPorEmail(String email) {
 
-        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(this);
+        circularProgressDrawable = new CircularProgressDrawable(this);
         circularProgressDrawable.setStrokeWidth(10);
         circularProgressDrawable.setCenterRadius(50);
         circularProgressDrawable.start();
@@ -132,16 +137,39 @@ public class MiPerfil extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         // Create a reference with an initial file path and name
-        StorageReference pathReference = storageRef.child("dogDate/" + email + ".jpg");
+        pathReference = storageRef.child("dogDate/" + email + ".jpg");
 
-        // Load the image using Glide
-        Glide.with(this /* context */)
-                .using(new FirebaseImageLoader())
-                .load(pathReference)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .placeholder(circularProgressDrawable)
-                .into(imagenPerro);
+        //comprobamos si existe la foto
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //EXISTE LA IMAGEN EN FIREBASE
+                // Got the download URL for 'users/me/profile.png'
+
+                // Load the image using Glide
+                Glide.with(MiPerfil.this /* context */)
+                        .using(new FirebaseImageLoader())
+                        .load(pathReference)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .placeholder(circularProgressDrawable)
+                        .into(imagenPerro);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //NO ESXISTE LA IMAGEN
+                // File not found
+
+                imagenPerro.setImageResource(R.drawable.comodindog);
+            }
+        });
+
+
+
+
+
 
 
     }
