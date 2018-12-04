@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -38,6 +39,18 @@
         <activity android:name=".EditarPerfil" android:screenOrientation="portrait"/>
         <activity android:name=".MessageListActivity" android:screenOrientation="portrait"/>
         <activity android:name=".RespuestaMatchs" android:screenOrientation="portrait" android:noHistory="true"></activity>
+
+        <provider
+            android:name=".GenericFileProvider"
+            android:authorities="${applicationId}.my.package.name.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
     </application>
+
 
 </manifest>

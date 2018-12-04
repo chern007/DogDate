@@ -1,10 +1,18 @@
 package com.example.carlos_hc.dogdate;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
@@ -136,32 +144,36 @@ public class EditarPerfil extends AppCompatActivity {
 
     public void obtenerFotoPath(View view) {
 
-        Intent intent = new Intent();
-        intent.setType("file/jpg");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
         startActivityForResult(Intent.createChooser(intent, "Selecciona una foto"), REQUEST_IMAGE_GET);
 
     }
+
+    //declaramos el uri fuera para poderlo utilizar en los siguientes dos metodos
+    Uri data;
 
     //recogemos la info del Intent de coger la imagen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_GET) {
-                Uri data = result.getData();
-                if (data.getLastPathSegment().endsWith("jpg")) {
 
-                    File myFile = new File(data.getPath());
+                data = result.getData();
 
-                    rutaImagen = myFile.getAbsolutePath();
+                String tusa = getUriRealPath(data);
 
-                    //lo convertimos a Bitmap
-                    fotoBitmap = BitmapFactory.decodeFile(rutaImagen);
 
-                    foto.setImageBitmap(fotoBitmap);//cargamos la foto elegida
+                if (tusa.endsWith("jpg")) {
 
-                    //actualizamos el bitmap de la clase padre
-                    //MiPerfil.obtenerBitmapFotoActual(miEmail.getText().toString());
+                    File myFile = new File(tusa);
+
+                    rutaImagen = myFile.getAbsolutePath();//guardamos la ruta de la imagen para saber que se ha cargado una imagen
+
+//                    //lo convertimos a Bitmap
+//                    fotoBitmap = BitmapFactory.decodeFile(rutaImagen);
+
+                    foto.setImageURI(data);
 
                 } else {
                     Toast.makeText(this, "No has escogido un archivo .jpg", Toast.LENGTH_LONG).show();
@@ -179,11 +191,11 @@ public class EditarPerfil extends AppCompatActivity {
 
             StorageReference storageRef = storage.getReference().child("dogDate");
 
-            Uri file = Uri.fromFile(new File(ruta));
+
             StorageReference riversRef = storageRef.child(miEmail.getText().toString() + ".jpg");
 
 
-            UploadTask uploadTask = riversRef.putFile(file);
+            UploadTask uploadTask = riversRef.putFile(data);
 
             // Register observers to listen for when the download is done or if it fails
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -203,20 +215,20 @@ public class EditarPerfil extends AppCompatActivity {
 
                     //preparamos el intent que tiene que recibir la actividad anterior
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result",miEmail.getText().toString());
-                    setResult(Activity.RESULT_OK,returnIntent);
+                    returnIntent.putExtra("result", miEmail.getText().toString());
+                    setResult(Activity.RESULT_OK, returnIntent);
 
                     //cerramos la actividad
                     EditarPerfil.this.finish();
                 }
             });
 
-        }else{
+        } else {
 
             //preparamos el intent que tiene que recibir la actividad anterior
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("result",miEmail.getText().toString());
-            setResult(Activity.RESULT_OK,returnIntent);
+            returnIntent.putExtra("result", miEmail.getText().toString());
+            setResult(Activity.RESULT_OK, returnIntent);
 
             finish();
         }
@@ -277,6 +289,46 @@ public class EditarPerfil extends AppCompatActivity {
                 .placeholder(circularProgressDrawable)
                 .into(foto);
 
+
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+
+    /* Get uri related content real local file path. */
+    private String getUriRealPath(Uri uri) {
+
+        if (uri == null){
+
+            return null;
+
+        }else{
+
+            String[] projection = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(uri,projection, null, null, null);
+
+            if (cursor != null) {
+
+                int col_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+
+                return cursor.getString(col_index);
+
+            }else{
+
+                return null;
+            }
+
+
+        }
 
     }
 
