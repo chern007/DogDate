@@ -35,20 +35,9 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".MiPerfil" android:screenOrientation="portrait"/>
-        <activity android:name=".ListaMatchs" android:screenOrientation="portrait"/>
+        <activity android:name=".ListaMatchs" android:screenOrientation="portrait" android:noHistory="true" android:launchMode="singleTop"/>
         <activity android:name=".EditarPerfil" android:screenOrientation="portrait"/>
-        <activity android:name=".MessageListActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".RespuestaMatchs" android:screenOrientation="portrait" android:noHistory="true"></activity>
-
-        <provider
-            android:name=".GenericFileProvider"
-            android:authorities="${applicationId}.my.package.name.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-        </provider>
+        <activity android:name=".RespuestaMatchs" android:screenOrientation="portrait" android:noHistory="true" android:launchMode="singleTop"></activity>
 
     </application>
 

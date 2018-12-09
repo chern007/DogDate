@@ -2,6 +2,7 @@ package com.example.carlos_hc.dogdate;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -240,9 +242,15 @@ public class RespuestaMatchs extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        //volvemos a la actividad anterior
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                Intent actividadListaMatchs = new Intent(getApplicationContext(),ListaMatchs.class);
+
+                actividadListaMatchs.putExtra("miPerroKey", claveMiPerro);
+                actividadListaMatchs.putExtra("miPerroNombre", nombreMiPerro);
+
+                startActivity(actividadListaMatchs);
         }
 
         return false;
@@ -254,6 +262,12 @@ public class RespuestaMatchs extends AppCompatActivity {
 
         listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").removeEventListener(eventoEscuchaMensajes);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        listenerMensajesMiperro.child(claveOtroPerro).child("mensajes").removeEventListener(eventoEscuchaMensajes);
     }
 
     @Override
